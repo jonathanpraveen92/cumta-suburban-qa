@@ -12,6 +12,8 @@ const analyticsRoutes = require('./routes/analytics');
 const reportRoutes = require('./routes/reports');
 const auditRoutes = require('./routes/audit');
 
+const seed = require('./seed');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -53,6 +55,9 @@ async function startServer() {
   try {
     // Connect to database and seed/check tables
     await db.initDb();
+    
+    // Automatically seed default users and stations if empty
+    await seed();
     
     app.listen(PORT, () => {
       console.log(`========================================`);
