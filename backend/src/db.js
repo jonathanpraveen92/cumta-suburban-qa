@@ -11,7 +11,7 @@ let isSQLite = false;
 // Helper to initialize SQLite database
 function setupSqlite() {
   isSQLite = true;
-  const dbPath = path.resolve(__dirname, '../../database/cumta_qa.sqlite');
+  const dbPath = path.resolve(__dirname, '../database/cumta_qa.sqlite');
   
   // Ensure database directory exists
   const dbDir = path.dirname(dbPath);
@@ -112,7 +112,7 @@ async function initDb() {
     setupSqlite();
   }
 
-  const schemaPath = path.resolve(__dirname, '../../database/schema.sql');
+  const schemaPath = path.resolve(__dirname, '../database/schema.sql');
   if (!fs.existsSync(schemaPath)) {
     console.error('schema.sql file not found at:', schemaPath);
     return;
