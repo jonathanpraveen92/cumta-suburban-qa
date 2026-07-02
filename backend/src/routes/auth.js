@@ -166,4 +166,39 @@ router.delete('/users/:id', authenticateToken, authorizeRoles('admin'), async (r
   }
 });
 
+// Temporary Database Debug & Manual Seeder Trigger
+router.get('/debug-db', async (req, res) => {
+  try {
+    const dbType = db.isSQLite() ? 'SQLite' : 'PostgreSQL';
+    
+    // Check database connection and users count
+    const usersCheck = await db.query('SELECT COUNT(*) as count FROM users');
+    const userCount = parseInt(usersCheck.rows[0].count || usersCheck.rows[0].COUNT || 0);
+    
+    const usersList = await db.query('SELECT id, username, email, role FROM users');
+    
+    let seedResult = 'No seeding needed, users already exist';
+    if (userCount === 0) {
+      const seed = require('../seed');
+      await seed();
+      seedResult = 'Seeding triggered successfully';
+    }
+    
+    return res.json({
+      success: true,
+      databaseType: dbType,
+      userCount,
+      users: usersList.rows,
+      seedResult
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: err.message,
+      stack: err.stack
+    });
+  }
+});
+
 module.exports = router;
+
